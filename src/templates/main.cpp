@@ -14,10 +14,12 @@ constexpr void display(){
 
 int main(){
     display<
-        Int<_INT<2>>
+        Int<_INT_<2>>
     >();
+    /*
     display<
         Int<Char<2>>
     >();
-    display<enable_if<_is_INT<_INT<1>>::value, _INT<1>>>();
+    */
+    display<enable_if<_is_INT_<_INT_<1>>::value, _INT_<1>>>();
 }

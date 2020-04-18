@@ -3,6 +3,7 @@
 #include <type_traits>
 namespace tpl{
 
+//wait for concepts
 template<int i>
 struct _INT_{};
 template<class T>
@@ -12,7 +13,7 @@ template<
 >
 struct _is_INT_<T<i>> : std::true_type{};
 
-template<class a>
+template<class a, class = std::enable_if_t<_is_INT_<a>::value>>
 struct Int{};
 
 
