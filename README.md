@@ -234,11 +234,14 @@ struct is_all_same_type<T1, T2, R...> : is_all_same_type<T2, R...>{}; //这里�
 我们来测试一下：
 
 ```
-is_all_same_type<Int<_Int_<1>>, Char<_Char_<'c'>>>::type  ==>  std::integral_constant<bool, false>
-is_all_same_type<Int<_Int_<1>>, Int<_Int_<2>>, Int<_Int_<3>>>::type ==> std::integral_constant<bool, true>
+is_all_same_type<Int<_Int_<1>>, Char<_Char_<'c'>>>::type
+  ==>  std::integral_constant<bool, false>
+is_all_same_type<Int<_Int_<1>>, Int<_Int_<2>>, Int<_Int_<3>>>::type 
+  ==> std::integral_constant<bool, true>
 is_all_same_type<
-            List<Int<_Int_<1>>>, List<Char<_Char_<'a'>>>
-        >::type										==> std::integral_constant<bool, true>
+    List<Int<_Int_<1>>>, List<Char<_Char_<'a'>>>
+>::type										
+  ==> std::integral_constant<bool, true>
 ```
 
 觉得`Int<_Int_<2>>`太繁琐了吧，我们可以用宏来遮掩一下丑陋：
