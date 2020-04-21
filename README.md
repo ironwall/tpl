@@ -74,10 +74,10 @@ struct make_list {
 };
 template<class head>
 struct make_list<head> {
-    using result = Cons<head, Null>;
+    using result = Cons<head, Nil>;
 };
-template<class ...Arg>
-using List = typename make_list<Arg...>::result;
+template<class ...arg>
+using List = typename make_list<arg...>::result;
 ```
 咦？那么既然支持形参包，那么我们完全可以不用Cons结构，直接造出一个List来：
 
@@ -233,7 +233,7 @@ struct is_all_same_type<T1, T2, R...> : is_all_same_type<T2, R...>{}; //这里�
 ```
 我们来测试一下：
 
-```
+```C++
 is_all_same_type<Int<_Int_<1>>, Char<_Char_<'c'>>>::type
   ==>  std::integral_constant<bool, false>
 is_all_same_type<Int<_Int_<1>>, Int<_Int_<2>>, Int<_Int_<3>>>::type 
