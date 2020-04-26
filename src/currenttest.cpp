@@ -1,7 +1,9 @@
 #include <iostream>
 #include <cxxabi.h>
 #include <type_traits>
-using namespace std;
+#include <array>
+using std::cout;
+using std::endl;
 
 template<int>
 struct _Int_{};
@@ -89,6 +91,39 @@ template<typename...Ts>
 struct StrictList : List<std::enable_if_t<is_all_same_type<Ts...>::value>>{};
 #define Int(n) Int<_Int_<n>>
 #define Char(n) Char<_Char_<n>>
+
+template<int x>
+constexpr size_t lengthForArray(){
+    return 1;
+}
+template<int x, int y, int...rest>
+constexpr size_t lengthForArray(){
+    return 1 + lengthForArray<y, rest...>();
+}
+
+template<typename T, T...s>
+struct Array1 : std::array<T, lengthForArray<s...>()>{
+    constexpr Array1(): std::array<T, lengthForArray<s...>()>{s...}{}
+    constexpr auto operator [](size_t pos) const{
+        return this->_M_elems[pos];
+    }
+};
+
+template<typename T, T...s>
+constexpr auto Array2(){
+    return std::array<T, lengthForArray<s...>()>{s...};
+};
+
+template<typename T, T...s>
+struct Array3{
+    const std::array<T, lengthForArray<s...>()> content{s...};
+    constexpr auto operator [](size_t pos) const {
+        return content[pos];
+    }
+};
+
+
+
 int main(){
     /*
     cout << abi::__cxa_demangle(typeid(
@@ -120,6 +155,31 @@ int main(){
     ).name(), 0, 0, 0) << endl;
     cout << abi::__cxa_demangle(typeid(
         StrictList<List<Int(1)>, List<Int(2), Int(3)>>{}
+    ).name(), 0, 0, 0) << endl;
+
+    cout << lengthForArray<1,22,3,4,5>() << endl;
+cout << "===========Array=========" << endl;
+    cout << "Array1<int, 1,2,3,4> \t\t==> " << abi::__cxa_demangle(typeid(
+        Array1<int, 1,2,3,4>{}
+    ).name(), 0, 0, 0) << endl;
+    cout << "Array1<int, 12,3,2,5,5>{}[1] \t==> "<< Array1<int, 12,3,2,5,5>{}[1] << endl;
+
+    cout << "Array2<int, 1,2,3,4>()[3] \t==> " << 
+        Array2<int, 1,2,3,4>()[3]
+    << endl;
+
+    cout << "Array3<int, 1,2,3,4>{} \t\t==> " << abi::__cxa_demangle(typeid(
+        Array3<int, 1,2,3,4>{}
+    ).name(), 0, 0, 0) << endl;
+    cout << "Array3<int, 1,2,3,4>{}[2] \t==> " << 
+        Array3<int, 1,2,3,4>{}[2]
+    << endl;
+cout << "===========_Int<Array?>=========" << endl;
+    cout << abi::__cxa_demangle(typeid(
+        _Int_<Array3<int, 12,3,2,5,5>{}[1]>{}
+    ).name(), 0, 0, 0) << endl;
+    cout << abi::__cxa_demangle(typeid(
+        _Int_<Array1<int, 12,3,2,5,5>{}[1]>{}
     ).name(), 0, 0, 0) << endl;
 
 }
